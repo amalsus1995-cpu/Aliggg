@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>بتكوين كاش - تسجيل الدخول</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui;
+      background: #0d0d0d;
+      color: white;
+      text-align: center;
+      padding-top: 60px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .box {
+      width: 90%;
+      max-width: 350px;
+      background: #1a1a1a;
+      margin: auto;
+      padding: 20px;
+      border-radius: 15px;
+      border: 1px solid #444;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: none;
+    }
+
+    button {
+      width: 90%;
+      padding: 12px;
+      background: gold;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .switch {
+      margin-top: 15px;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .switch span {
+      color: gold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>بتكوين كاش<br>تسجيل الدخول / إنشاء حساب</h1>
+
+  <div class="box" id="loginBox">
+    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" />
+    <input type="password" id="loginPassword" placeholder="كلمة المرور" />
+    <button onclick="login()">تسجيل الدخول</button>
+
+    <div class="switch">
+      ليس لديك حساب؟ <span onclick="showRegister()">إنشاء حساب</span>
+    </div>
+  </div>
+
+  <div class="box" id="registerBox" style="display:none;">
+    <input type="text" id="regName" placeholder="الاسم الكامل" />
+    <input type="email" id="regEmail" placeholder="البريد الإلكتروني" />
+    <input type="password" id="regPassword" placeholder="كلمة المرور" />
+    <button onclick="register()">إنشاء حساب</button>
+
+    <div class="switch">
+      لديك حساب؟ <span onclick="showLogin()">تسجيل الدخول</span>
+    </div>
+  </div>
+
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+  const supabase = createClient(
+    "https://aswduknpmvjtnmynfdex.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzd2R1a25wbXZqdG5teW5mZGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzODkzMDEsImV4cCI6MjA4MDk2NTMwMX0.5rya3VsjLUJFykuFHOocA4LGoAc3MslSwUci1uDowto"
+  );
+
+  window.login = async () => {
+    let email = loginEmail.value;
+    let pass = loginPassword.value;
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+
+    if (error) alert("خطأ في تسجيل الدخول");
+    else window.location.href = "dashboard.html";
+  };
+
+  window.register = async () => {
+    let name = regName.value;
+    let email = regEmail.value;
+    let pass = regPassword.value;
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password: pass,
+      options: { data: { full_name: name } }
+    });
+
+    if (error) alert("خطأ: " + error.message);
+    else {
+      alert("تم إنشاء الحساب! قم بتسجيل الدخول");
+      showLogin();
+    }
+  };
+
+  window.showRegister = () => {
+    loginBox.style.display = "none";
+    registerBox.style.display = "block";
+  };
+
+  window.showLogin = () => {
+    loginBox.style.display = "block";
+    registerBox.style.display = "none";
+  };
+</script>
+
+</body>
+</html>

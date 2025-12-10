@@ -2,168 +2,84 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>لوحة التحكم - بتكوين كاش</title>
+  <title>شحن الرصيد</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #0d0d0d;
-      font-family: system-ui;
-      color: white;
+    body { background:#0d0d0d; color:white; font-family:system-ui; padding:20px; }
+    .box { background:#1a1a1a; padding:20px; border-radius:12px; border:1px solid #333; margin-bottom:20px; }
+    input, select {
+      width:100%; padding:12px; margin-bottom:10px;
+      border-radius:10px; border:none;
     }
-
-    .header {
-      background: #1a1a1a;
-      padding: 15px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      border-bottom: 1px solid #333;
-    }
-
-    .container {
-      padding: 20px;
-    }
-
-    .section-title {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .charge-buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .charge-buttons button {
-      background: gold;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      color: black;
-    }
-
-    .info-box {
-      background: #1a1a1a;
-      padding: 15px;
-      border-radius: 12px;
-      border: 1px solid #333;
-      margin-bottom: 15px;
-    }
-
-    .footer-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #111;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      border-top: 1px solid #333;
-    }
-
-    .footer-nav button {
-      background: none;
-      border: none;
-      color: white;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    .logout {
-      margin-top: 20px;
-      background: red;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
-      cursor: pointer;
-      font-weight: bold;
+    button {
+      width:100%; padding:12px; background:gold;
+      border:none; border-radius:10px; font-weight:bold;
+      font-size:16px;
     }
   </style>
 </head>
-
 <body>
 
-  <div class="header">لوحة التحكم</div>
+<h2>💰 شحن الرصيد</h2>
 
-  <div class="container">
+<div class="box">
+  <label>اختر مبلغ الشحن</label>
+  <select id="amount">
+    <option value="10">$10</option>
+    <option value="50">$50</option>
+    <option value="100">$100</option>
+    <option value="200">$200</option>
+  </select>
 
-    <div class="info-box">
-      <div><b>الاسم:</b> <span id="userName"></span></div>
-      <div><b>البريد:</b> <span id="userEmail"></span></div>
-    </div>
+  <label>رقم التحويل (TXID)</label>
+  <input type="text" id="txid" placeholder="أدخل رقم التحويل هنا">
 
-    <div class="section-title">💰 الشحن السريع</div>
+  <button onclick="sendRequest()">إرسال طلب الشحن</button>
+</div>
 
-    <div class="charge-buttons">
-      <button onclick="charge(10)">$10</button>
-      <button onclick="charge(50)">$50</button>
-      <button onclick="charge(100)">$100</button>
-      <button onclick="charge(200)">$200</button>
-    </div>
+<div class="box">
+  <b>محفظة الموقع:</b><br>
+  <span style="color:gold">TPNoGerv1EMBSdrs9Yca93eCQUVsoNiRvq</span><br><br>
 
-    <div class="info-box">
-      <b>ملاحظة مهمة:</b><br>
-      أقل مبلغ شحن هو <span style="color:gold">10 دولار</span>.<br>
-      السحب ممنوع لأول <span style="color:gold">25 يوم</span> بعد أول عملية شحن.<br><br>
-      محفظة الموقع:<br>
-      <span style="color:gold">TPNoGerv1EMBSdrs9Yca93eCQUVsoNiRvq</span>
-    </div>
+  <b>مهم:</b><br>
+  بعد إرسال الطلب سيتم مراجعته.<br>
+  السحب ممنوع لأول 25 يوم بعد أول شحن.<br>
+</div>
 
-    <div class="logout" onclick="logout()">تسجيل الخروج</div>
-
-  </div>
-
-  <div class="footer-nav">
-    <button onclick="go('profile.html')">👤 حسابي</button>
-    <button onclick="go('deposit.html')">💰 محفظتي</button>
-    <button onclick="go('ads.html')">📺 الإعلان</button>
-    <button onclick="go('about.html')">ℹ️ من نحن</button>
-  </div>
+<button onclick="goBack()">رجوع</button>
 
 <script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-  const supabase = createClient(
-    "https://aswduknpmvjtnmynfdex.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzd2R1a25wbXZqdG5teW5mZGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzODkzMDEsImV4cCI6MjA4MDk2NTMwMX0.5rya3VsjLUJFykuFHOocA4LGoAc3MslSwUci1uDowto"
-  );
+const supabase = createClient(
+  "https://aswduknpmvjtnmynfdex.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzd2R1a25wbXZqdG5teW5mZGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzODkzMDEsImV4cCI6MjA4MDk2NTMwMX0.5rya3VsjLUJFykuFHOocA4LGoAc3MslSwUci1uDowto"
+);
 
-  async function loadUser() {
-    let { data, error } = await supabase.auth.getUser();
-    if (!data.user) {
-      window.location.href = "index.html";
-      return;
-    }
+window.sendRequest = async () => {
+  let { data: userData } = await supabase.auth.getUser();
+  if (!userData.user) { alert("يجب تسجيل الدخول"); return; }
 
-    let user = data.user;
+  let amount = document.getElementById("amount").value;
+  let txid = document.getElementById("txid").value;
 
-    userName.textContent = user.user_metadata.full_name || "مستخدم";
-    userEmail.textContent = user.email;
-  }
+  if (!txid) { alert("يرجى كتابة رقم التحويل"); return; }
 
-  loadUser();
+  let { error } = await supabase
+    .from("deposit_requests")
+    .insert({
+      user_id: userData.user.id,
+      amount: amount,
+      txid: txid,
+      status: "pending"
+    });
 
-  window.logout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "index.html";
-  };
+  if (error) alert("خطأ: " + error.message);
+  else alert("تم إرسال الطلب! يرجى انتظار الرد.");
+};
 
-  window.charge = (amount) => {
-    alert("لشحن مبلغ $" + amount + 
-    "\nأرسل المبلغ إلى محفظة الموقع:\nTPNoGerv1EMBSdrs9Yca93eCQUVsoNiRvq");
-  };
-
-  window.go = (page) => {
-    window.location.href = page;
-  };
+window.goBack = () => { window.location.href = "dashboard.html"; };
 </script>
 
 </body>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>الإعلانات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body{ background:#0d0d0d; color:white; font-family:system-ui; padding:20px; }
+    .ad{ background:#1a1a1a; padding:15px; border-radius:12px; border:1px solid #333; margin-bottom:20px; }
+    button{ width:100%; padding:10px; background:gold; border:none; border-radius:10px; font-size:15px; font-weight:bold; }
+  </style>
+</head>
+<body>
+
+<h2>📺 الإعلانات المتاحة</h2>
+
+<div class="ad">
+  <h3>إعلان رقم 1</h3>
+  <p>اضغط للمشاهدة للحصول على مكافأة.</p>
+  <button onclick="watch()">مشاهدة الإعلان</button>
+</div>
+
+<button onclick="goBack()">رجوع</button>
+
+<script>
+function watch(){ alert("الإعلان سيعمل… + سيتم إضافة المكافأة لاحقاً"); }
+function goBack(){ window.location.href='dashboard.html'; }
+</script>
+
+</body>
+</html>
